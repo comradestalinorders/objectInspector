@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<style type="">
+		table.objIns{
+			border-collapse: collapse; border: solid 1px;
+		}
+		table.objIns tr {
+			border-collapse: collapse; border: solid 1px;
+		}
+		table.objIns tr  td{
+			border-collapse: collapse; border: solid 1px;
+		}
+		
+		table.objIns tr.colorize:hover{
+			background-color: gray;
+			font-size: 28px;
+		}
+		.head{
+			font-weight: bold;
+			font-size: 20px;
+			background-color: white;
+		}
+		.ctrlbtn{
+			width: 24px;
+			height: 24px;
+			padding:3px; 
+			margin:0px;
+		}
+		.title{
+			font-size:16px; font-weight:bold;
+		}
+		
+	</style>
+		<h:panelGroup rendered="#{xBean.showId}" id="objInspectorCnt">
+					<!-- Control buttons -->
+						<a4j:commandButton styleClass="ctrlbtn" image="/images/icons/silk/16x16/arrow_rotate_clockwise.gif"  action= "#{xBean.objInspector.toParentSnapShot()}" 
+								   reRender="objInspectorCnt" value="parent"   oncomplete="Richfaces.showModalPanel('objInspector');">
+							<rich:toolTip> <h:outputText value="Goto container Object of currently inspected Object" /> </rich:toolTip>
+						</a4j:commandButton>
+						<a4j:commandButton styleClass="ctrlbtn" action="#{xBean.objInspector.superClass()}" image="/images/icons/silk/16x16/arrow_join.gif" reRender="objInspectorCnt" value="Inspect Super Class" 
+						  oncomplete="Richfaces.showModalPanel('objInspector');">
+						  	<rich:toolTip> <h:outputText value="Inspect Super Class Members" /> </rich:toolTip>
+						 </a4j:commandButton>
+						<a4j:commandButton styleClass="ctrlbtn" action="#{xBean.objInspector.getSubClass()}" image="/images/icons/silk/16x16/arrow_down.gif" 
+						  reRender="objInspectorCnt" value="Inspect Sub lcass" oncomplete="Richfaces.showModalPanel('objInspector');" >
+						  	<rich:toolTip> <h:outputText value="Inspect Sub Class Members" /> </rich:toolTip>
+						</a4j:commandButton>
+					<!-- end of control buttons -->
+					
+					<!-- class hierarchy table -->
+					<div></div>
+					<h:outputText styleClass="title" value="Class hierarchy" />
+					<table>
+						<a4j:repeat value="#{xBean.objInspector.classHierarchy}" var="cls" rowKeyVar="ind">
+							<tr>
+								<td style="#{xBean.objInspector.currentInsepectedClassIndex == ind ? 'color:gold;':''}">
+								<a4j:commandLink  style="#{xBean.objInspector.currentInsepectedClassIndex == ind ? 'color:yellow; font-size:18px;':''}"
+									 action="#{xBean.objInspector.setCurrentInsepectedClassIndex(ind)}" 
+									 reRender="objInspectorCnt"
+									  oncomplete="Richfaces.showModalPanel('objInspector');"  
+									 value="#{cls.name}" /></td>
+							</tr>
+						</a4j:repeat>
+					</table>
+					
+					<!-- data table containing inspected object data fields information -->
+					<br/>
+					<h:outputText styleClass="title" value="Inspected Object Data Members  " />
+					<table class="objIns">	
+							<tr class="head">
+								<td>Modifiers</td>
+								<td>Name</td>
+								<td>Type</td>
+								<td>Value</td>
+								<td>IsIterable</td>
+								<td>Inspect Var</td>
+							</tr>
+						<a4j:repeat value="#{xBean.objInspector.declaredFields}" var="datafield">
+							 <tr class="colorize">
+							    <td>#{datafield.field.modifiers}</td>
+							    <td>#{datafield.field.name}</td>
+							    <td>#{datafield.field.type}</td>
+							    <td>#{datafield.value}</td>
+							    <td>#{datafield.iterable}</td>
+							    <td> 
+								    <a4j:commandButton image="/images/icons/info.png" style="padding:0px; margin:0px; width:24px; height:24px; float:right;" 
+								    		action="#{xBean.objInspector.setObjectToInspect(datafield.field.get(xBean.objInspector.objectToInspect))}" 
+								    		reRender="objInspectorCnt" value="I"   oncomplete="Richfaces.showModalPanel('objInspector');">
+								    </a4j:commandButton>
+							    </td>
+							  </tr> 
+						</a4j:repeat>
+					</table>
+					
+					<h:panelGroup rendered="#{xBean.objInspector.iterable}">
+					<table class="objIns">
+						<tr class="head">
+								<td>Collection Element</td>
+								<td>Index</td>
+								<td>Inspect Var</td>
+						</tr>
+						<a4j:repeat value="#{xBean.objInspector.objectAsCollection}" var="element">
+							<tr>
+								<td>#{element}</td>
+								<td>#{rowKeyVar}</td>
+							    <td> 
+								    <a4j:commandButton image="/images/icons/info.png" style="padding:0px; margin:0px; width:24px; height:24px; float:right;" 
+								    		action="#{xBean.objInspector.setObjectToInspect(element)}" 
+								    		reRender="objInspectorCnt" value="I"   oncomplete="Richfaces.showModalPanel('objInspector');">
+								    </a4j:commandButton>
+							    </td>
+							</tr>
+						</a4j:repeat>
+					</table>
+					</h:panelGroup>
+		</h:panelGroup>
+</ui:composition>

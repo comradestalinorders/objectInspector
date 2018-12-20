@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<!-- this style makes the modal panel non modal -->
+	<style>
+		.noMaskClass .rich-mpnl-mask-div{
+		  display:none;
+		}
+	</style>
+	
+	<script type="text/javascript">
+		<!-- init gallery images from Bean -->
+		gallery.setImages(#{xBean.linksAsJson});
+
+		function showLoader(b){
+			if(b){
+				jQuery('.imgloader').css('display', 'block');
+			}else{
+				jQuery('.imgloader').css('display', 'none');
+			}
+		}
+
+
+		function resiZeImage(){
+			var vieww = gallery.width - 22; vieww =   vieww + 'px';
+			var viewh = gallery.height - 60; viewh = viewh + 'px';
+			var viewImg = jQuery('.view img')
+			viewImg.css('height', viewh);
+			viewImg.css('width', vieww);
+			
+		}
+
+		<!-- creates image on demand -->
+		function createImage(imgsrc){
+			showLoader(true);
+			var cnt = '#{facesContext.externalContext.requestContextPath}';
+			var scr = cnt + imgsrc.filePath + '/' + imgsrc.fileName;
+			var view = jQuery('.view');
+			var s = '<img  style="border:2px solid white; display:block;"  src="' + scr + '"/>';
+			console.log(imgsrc);
+			view.html(s);
+			view.css('display', 'block');
+			setOpacity('.view', '0.1');
+			
+			jQuery('.view img').load(function() {
+				showLoader(false);
+				//set image name
+				view.after('<center><div style="margin:auto;font-size:20px;font-weight:bold;">' + imgsrc.fileName + '</div></center>');
+				resiZeImage();
+				setOpacity('.view', '1.0');
+			    console.log('Image has loaded....');
+			});
+		};
+
+		<!-- minimizes the gallery-->
+		function minimize(id){
+			var cntDiv = 'ContentDiv';
+			var shdDiv = 'ShadowDiv';
+			if(!gallery.minimized){  //minimize
+				getCurrentSize(id);       //get the gallery size before minimizing
+				document.getElementById(id+cntDiv).style.height='20px';
+				document.getElementById(id+shdDiv).style.height='20px';
+			}else{
+				//restore
+				document.getElementById(id+cntDiv).style.height = gallery.height+'px';
+				document.getElementById(id+cntDiv).style.width = gallery.width+'px';
+			}
+			gallery.minimized=!gallery.minimized;   //invert minimize
+		};
+
+		<!-- gets the gallery current size -->
+		function getCurrentSize(id){
+			var d = new  Object();
+			var cntDiv = 'ContentDiv';
+			var shdDiv = 'ShadowDiv';
+			var h = parseInt(document.getElementById(id+cntDiv).style.height);
+			var w = parseInt(document.getElementById(id+cntDiv).style.width);
+			if(isNaN(h)) {gallery.height=200;} else {gallery.height=h;}
+			if(isNaN(w)) {gallery.width=200;} else {gallery.width=w;}
+			d.width=gallery.width;
+			d.height=gallery.height;
+			console.log(w);
+			console.log(h);
+			return d;
+		}
+
+		function setOpacity(id, opacity){
+			jQuery(id).css('opacity', opacity);// = opacity;
+		}
+	</script>
+	
+	<h:form  style="margin: 8px;" > 
+		<rich:modalPanel onmouseover="this.style.opacity='1.0';" 
+						 onbeforeshow="gallery.showCurrentImg(createImage);"  
+						 onmouseout="this.style.opacity='0.2';"
+						 styleClass="noMaskClass" id="#{xBean.galleryModalId}"
+						 moveable="true"
+						 width="500"
+						 onresize="getCurrentSize('#{rich:clientId(xBean.galleryModalId)}'); resiZeImage();"
+						 height="500"
+						 resizeable="true">
+			<f:facet name="header">
+				<h:outputText id="modalCaption" value="Документи" />
+			</f:facet>
+			<f:facet name="controls">
+	            <h:panelGrid  rendered="true" style="margin-top:-5px;" columns="4">
+					<img style="height: 18px;" src="#{facesContext.externalContext.requestContextPath}/images/prev.jpg"  onclick="gallery.prev();gallery.showCurrentImg(createImage);"></img>
+					<img style="height: 18px; padding-right:8px;" src="#{facesContext.externalContext.requestContextPath}/images/next.jpg"  onclick="gallery.next(); gallery.showCurrentImg(createImage);"></img>
+					<!-- minimize the gallery -->
+					<img onclick="minimize('#{rich:clientId(xBean.galleryModalId)}'); " height="16px;" width="16px;" src="#{facesContext.externalContext.requestContextPath}/images/minimize.png"></img>
+					<!-- close the gallery pop up panel -->
+	            	<h:commandButton style="height:16px; width:16px;" action="close" onclick="Richfaces.hideModalPanel('#{xBean.galleryModalId}');"  image="/images/close.png" value="closebtn" />
+	            </h:panelGrid>
+	        </f:facet>
+	        <!-- links for testing purposes must not be shown -->
+			<a href="#" style="display: none;" onclick="alert(document.getElementById('#{rich:clientId(xBean.galleryModalId)}'));">Gallery ModalId</a>
+			<a href="#" style="display: none;" onclick="alert(document.getElementById('#{rich:clientId(xBean.galleryModalId)}ContentDiv'));">ContentDiv ModalId</a>
+			
+			<!-- the gallery container  itself -->     
+			<div  class="view" style="display:none; height:100%; width:100%; position:relative; clear:both;">
+			</div>
+			<img class="imgloader"  style="position:absolute; top:44%; right:50%; width:64px; height:64px;display:block;" src="#{facesContext.externalContext.requestContextPath}/images/loading_animation.gif"></img>
+		</rich:modalPanel>
+	</h:form>
+	
+</ui:composition>

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	
+	<h:form id="modalForm" style="margin: 8px;" > 
+	<rich:modalPanel id="msgModal" onshow="javascript:document.getElementById('modalForm:btnOK').focus();"
+					 width="500"
+					 height="50" 
+					 resizeable="false"
+					 autosized="true">
+		<f:facet name="header">
+			<h:outputText id="modalCaption" value="#{xBean.modalDialog.caption}" />
+		</f:facet>
+		 
+	 
+		<f:facet name="controls">
+            <h:panelGrid rendered="#{xBean.modalDialog.errMsg != null}">
+            	<h:commandButton  action="#{xBean.modalOk}"  image="#{xBean.modalDialog.closeIconPath}" styleClass="hidelink" id="hidelink" oncomplete="javascript:setFocus('#{xBean.focus}');"  />
+            </h:panelGrid>
+        </f:facet>
+ 		
+			<table cellpadding="0" cellspacing="0" style="width: 100%; padding-bottom: 8px;">
+				<tr valign="middle"><td align="center" width="60px" >
+					<h:graphicImage id="modalIcon" value="#{xBean.modalDialog.iconPath}" />
+				</td><td style="display: block; overflow: auto;">
+					<h:outputText id="modalMsg" style="display: block; max-height: 360px;"
+								  value="#{xBean.modalDialog.errMsg} #{xBean.modalDialog.infoMsg} #{xBean.modalDialog.yesNoMsg}" 
+								  escape="false"/>
+					<h:inputText style="display: none;" value="#{xBean.focus}"/>
+				</td></tr>
+			</table>	
+			<center>
+				<h:panelGrid columns="4" cellpadding="0" cellspacing="0">
+					<h:commandButton id="btnReport" 
+									   action="#{xBean.modalReport}" 
+									   styleClass="button"
+									   value="#{msgButtons.btnReport}" 
+									   rendered="#{xBean.modalDialog.reportMsg!= null}" />
+					<h:commandButton id="btnOK" 
+									   action="#{xBean.modalOk}" 
+									   styleClass="button"
+									   value="#{msgButtons.btnOK}" 
+									   oncomplete="javascript:setFocus('#{xBean.focus}');" 
+									   rendered="#{xBean.modalDialog.errMsg != null || xBean.modalDialog.infoMsg != null}" />
+					<h:commandButton id="btnYes" 
+									   action="#{xBean.modalYes}"	
+									   styleClass="button"
+									   style="width : 100px;"
+									   value="#{msgButtons.btnYes}" 
+									   rendered="#{xBean.modalDialog.yesNoMsg != null}" 
+									   onclick="javascript:Richfaces.showModalPanel('panelPr');startProgress();"/>
+				    <rich:spacer width="15"/>
+					<h:commandButton id="btnNo"
+									   action="#{xBean.modalNo}" 
+									   styleClass=" button"
+									   style="width : 100px;"
+									   value="#{msgButtons.btnNo}" 
+									   rendered="#{xBean.modalDialog.yesNoMsg != null}" />	
+	 				<a4j:commandButton id="btnCancel" 
+	 								   action="#{xBean.modalDialogClear}"	
+	 								   styleClass="button"		
+									   value="#{msgButtons.btnCancel}" 
+									   rendered="false" />			   				   
+					<rich:componentControl for="msgModal" 
+										   attachTo="btnOK,btnCancel,hidelink,btnYes,btnNo,btnReport" 
+										   operation="hide" 
+										   event="onclick" >
+					</rich:componentControl>
+				</h:panelGrid>
+			</center>
+	</rich:modalPanel>
+	</h:form>
+	
+	
+	<h:form>
+		<ui:include src="/templates/objInspectorModal.xhtml" >
+			<ui:param name="xBean" value="#{xBean}" />
+		</ui:include>
+	</h:form>
+	
+</ui:composition>

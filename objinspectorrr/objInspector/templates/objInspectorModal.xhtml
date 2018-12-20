@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	
+	
+	
+	<h:form id="objForm">
+		<rich:modalPanel id="objInspector"  moveable="true" rendered="true"  top="0px" left="0px"   width="800" 
+						 height="600"  domElementAttachment="form" style="overflow:scroll;" >
+			<f:facet name="header">
+				<h:outputText id="modalCaptionOIn" value="Object Inspector" />
+			</f:facet>
+			<f:facet name="controls">
+				<a style="color:red;" href="#" onclick = "Richfaces.hideModalPanel('objInspector');">close</a>
+			</f:facet>
+				<ui:include src="/templates/inspectorContent.xhtml" >
+					<ui:param name="xBean" value="#{xBean}" />
+				</ui:include>
+		</rich:modalPanel>
+	</h:form>
+</ui:composition>

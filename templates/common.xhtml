@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+<a4j:loadStyle src="resource:///styles/default.css" />
+<a4j:loadStyle src="resource://net/is_bg/ltf/resources/styles/default.xcss" />
+
+<head>
+<!--[if lt IE 7.]><link rel="stylesheet" type="text/css" href="#{facesContext.externalContext.requestContextPath}/styles/defaultIE.css" /><![endif]-->
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="cache-control" content="no-cache" />
+
+
+
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/progressbar.js"></script> 
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/common.js"></script>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/tdgallery.js"></script>
+<!--[if lt IE 7.]><script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/pngfix.js" ></script><![endif]-->
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/disableBackBtn.js"></script>
+<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/scripts/inputSelect.js"></script>
+<script type="text/javascript">
+		    window.history.forward();
+		    function noBack() { window.history.forward(); }
+</script>
+<script type="text/javascript">
+//<![CDATA[
+
+var totalTime;
+var t;
+var timer_is_on=false;
+
+function documentOnLoad(flags){
+	setInputSelect();
+	errMsg();
+	startTimer();
+	showValuesInCombos(flags);
+	return false;noBack();
+};
+
+function ctrlAltF(context){
+	var n = document.getElementById('cntFlag').innerHTML;
+	var f = setPowers(n);
+	jQuery.ajax({
+		  url: context,
+		  dataType: "html",
+		  data : {flags:f}
+	});
+};
+
+//]]>
+</script>
+
+<ui:insert name="head">
+	<!-- pageHead -->
+</ui:insert>
+<title><ui:insert name="title">
+	<!-- pageTitle -->
+</ui:insert></title>
+</head>
+
+
+
+<body onload="documentOnLoad(#{sha512CalculatorBean.flags});" onkeydown="disable();"
+      onpageshow="if (event.persisted) noBack();" onunload="">
+      
+
+
+<rich:messages 	showDetail="#{false}" 
+				showSummary="#{true}" 
+				styleClass="commonError" 
+				style="	background-image: url('#{facesContext.externalContext.requestContextPath}/images/icons/exclamation.png');
+						background-repeat: no-repeat;
+						background-position: 20px;" />
+
+
+
+<table cellpadding="0" cellspacing="0" style="width: 100%; height: 100%">
+	<tbody>
+		<tr>
+			<td valign="top">
+			<table class="pghead" cellpadding="0" cellspacing="0"
+				style="width: 100%; height: auto; text-align: center;">
+				<tbody>
+					<tr>
+						<td style="text-align: center; font-size: 10pt;">
+							<ui:insert name="header"><!-- Page head here!  --></ui:insert>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: center; font-size: 10pt;">
+							<ui:insert name="subHeader"><!-- Page subhead here!  --></ui:insert>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<ui:include src="/templates/hbuttons.xhtml" />
+			<ui:insert name="body">
+				<!-- Page body here! -->
+			</ui:insert></td>
+		</tr>
+		<tr>
+			<td valign="bottom" align="center" style="padding-left: 10px; padding-right: 10px;">
+				<h:form id="frmjp" >
+				    <h:commandButton id="btnjp" value="download"  actionListener="#{jappletBean.downloadSetupFile}" style="display:none;height:0;width:0;"/>
+				</h:form> 
+				
+				<h:panelGrid style="height:0;width:0;">
+					<rich:hotKey key="alt+ctrl+w" handler="javascript:location.href = '#{facesContext.externalContext.requestContextPath}/pages/menu/menuedit.jsf';return false;"/>
+					<rich:hotKey key="alt+ctrl+g" handler="javascript:location.href = '#{facesContext.externalContext.requestContextPath}/pages/groups/groups.jsf';return false;"/>
+					<rich:hotKey key="alt+ctrl+home" handler="javascript:location.href = '#{facesContext.externalContext.requestContextPath}/pages/controlpanel/controlpanel.jsf';return false;"/>
+					<rich:hotKey key="alt+ctrl+u" handler="javascript:location.href = '#{facesContext.externalContext.requestContextPath}/pages/decode/decode.jsf';return false;"/>
+					<rich:hotKey key="alt+ctrl+a" handler="javascript:location.href = '#{facesContext.externalContext.requestContextPath}/pages/appinternals.jsf';return false;"/>
+					<rich:hotKey key="alt+ctrl+f" handler="javascript:ctrlAltF('#{facesContext.externalContext.requestContextPath}/pages/appinternals.jsf');"/>
+				</h:panelGrid>
+				
+				<ui:include src="/include/footer.xhtml" >
+					<ui:param name="supportPhone" value="#{sessionDataBean.supportPhone}" />
+					<ui:param name="supportMobile" value="#{sessionDataBean.supportMobile}" />
+					<ui:param name="supportURL" value="#{sessionDataBean.supportURL}" />
+				</ui:include>				
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<h:graphicImage id="ajaxIndicator" value="/images/ajax_indicator.gif"
+	style="width: 66px; height: 66px; position: fixed; z-index: 10000; display: none; " />
+<a4j:status id="ajaxStatus" onstart="javascript:Richfaces.showModalPanel('panelPr');startProgress();"
+	onstop="javascript:Richfaces.hideModalPanel('panelPr');" />
+	<rich:modalPanel id="panelPr" autosized="true">
+			<h:form id="form">
+			 <table>
+			 	<tr>
+			 		<td>
+			  			<rich:progressBar mode="client" id="progressBar" minValue="-1" maxValue="100"/> 
+			  		</td>
+			  		<td>
+			  				<img  style="border-style: none;"  src="#{facesContext.externalContext.requestContextPath}/images/objects_8.gif"/>
+			  		</td>
+			  	</tr>
+			  </table>			
+			</h:form>
+		</rich:modalPanel>
+  <ui:insert name="appletscript"></ui:insert>   		
+  
+  <div style="position:fixed; bottom:0; right:0;  height:100px; width:50px; background-color: red;display: none;">
+  	<rich:panel>
+  		<f:facet name="header">fserf</f:facet>
+  	</rich:panel>
+  </div>
+  
+</body>
+</html>

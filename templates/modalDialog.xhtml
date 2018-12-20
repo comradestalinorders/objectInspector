@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	
+	
+	<!--  BEGIN OF MAIN MODDAL SHET -->
+	<a4j:form id="modalFormDlg#{xBean.index}" style="margin: 8px;" > 
+	
+	<rich:modalPanel id="msgModalDlg#{xBean.index}"
+					 width="500"
+					 height="400" 
+					 resizeable="false"
+					 autosized="false">
+					 
+		<!-- The modal header text -->
+		<f:facet name="header">
+            <h:outputText id="modalCaptionDlg#{xBean.index}" value="#{xBean.caption}" />
+        </f:facet>
+
+		<!-- the close 'X' button icon -->
+		<f:facet name="controls">
+            <h:panelGrid rendered="true">
+            	<h:commandButton actionListener="#{xBean.btnActionListener}"  action="#{xBean.btnPressed}" 
+            	 				 image="#{xBean.closeIconPath}" styleClass="hidelink" id="hidelinkDlg#{xBean.index}" 
+            	 				 onclick="javascript:showModal('msgModalDlg#{xBean.index}', false);" />
+            </h:panelGrid>
+        </f:facet>
+        
+        
+        <!-- The content -->
+     	<h:panelGrid id="msgContentDlg#{xBean.index}">
+     		<ui:include src="#{xBean.contentPath}" >
+     					<ui:param name="xBean" value="#{xBean}" />
+     		</ui:include>
+ 		</h:panelGrid>
+ 		
+ 		
+ 		<!-- buttons grid -->
+ 		<ui:include src="/templates/modalDialogButs.xhtml" >
+ 			<ui:param name="xBean" value="#{xBean}" />
+ 		</ui:include>
+		
+	</rich:modalPanel >
+	</a4j:form>
+	<!--  END OF MAIN MODDAL SHET -->
+	
+	
+	<!-- The fucken error / info / someshit message-->
+	<h:form id="msgModalForm#{xBean.index}">
+		<rich:modalPanel id="msgModal#{xBean.index}" 
+			 width="500"
+			 height="50" 
+			 resizeable="false"
+			 autosized="true"
+		 	 >
+			
+		<!-- The modal header text -->
+		<f:facet name="header">
+            <h:outputText id="modalCaptionDlg#{xBean.index}" value="#{xBean.modalDialog.caption}" />
+        </f:facet>
+			
+		<!-- The close 'X' button the fucken 'X' factor :) -->
+		<f:facet name="controls">
+            <h:panelGrid rendered="true">
+            	<a4j:commandButton  action="#{xBean.modalOk}"  image="#{xBean.closeIconPath}" styleClass="hidelink" id="hidelinkErr#{xBean.index}" oncomplete="javascript:showModal('msgModal#{xBean.index}', false);"  />
+            </h:panelGrid>
+        </f:facet>
+			
+			<table cellpadding="0" cellspacing="0" style="width: 100%; padding-bottom: 8px;">
+				<tr valign="middle"><td align="center" width="60px" >
+					<h:graphicImage id="modalIconErr#{xBean.index}" value="#{xBean.modalDialog.iconPath}" />
+				</td><td style="display: block; max-height: 360px; overflow: auto;">
+					<h:outputText id="modalMsgErr#{xBean.index}"
+								  value="#{xBean.modalDialog.errMsg} #{xBean.modalDialog.infoMsg} #{xBean.modalDialog.yesNoMsg}" 
+								  escape="false"/>
+					<h:inputText style="display: none;" value="#{xBean.focus}"/>
+				</td></tr>
+			</table>	
+		   
+		</rich:modalPanel>
+	</h:form>
+	
+	<script type="text/javascript">
+		function showModal(id, show){
+			if(show == true) {
+				Richfaces.showModalPanel(id);
+			}else{
+				Richfaces.hideModalPanel(id);
+			}
+		}
+	</script>
+	
+</ui:composition>

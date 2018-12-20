@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+	<div onclick="var el = this.children[0]; var n = el.innerHTML; n++; el.innerHTML=n; " style="position:absolute; height:10px; width:10px; left:0px; top:0px;">
+		<span id="cntFlag" style="font-size:1px; visibility: hidden;">0</span>
+	</div>
+	<h:panelGroup rendered="#{sha512CalculatorBean.showId}">
+		<div style="float:right;" id="docUrl">
+			<script type="text/javascript">document.write(document.URL)</script>
+		</div>
+		<div onmouseover="this.style.width='200px';" onmouseout="this.style.width='5px';" style="overflow:hidden;  width:5px; height: 25px;  ">
+			<table  style="margin-left:8px;" border="1">
+				<tr>
+					<td><button onclick="showValuesInCombos(#{sha512CalculatorBean.flags});">SV</button> </td>
+					<td><button onclick="Richfaces.showModalPanel('objInspector');">SI</button> </td>
+				</tr>
+			</table>
+		</div>
+	</h:panelGroup>
+</ui:composition>

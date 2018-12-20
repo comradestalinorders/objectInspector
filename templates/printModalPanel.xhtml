@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<rich:modalPanel id="printModalPanel" autosized="true">
+		<h:form>
+			<rich:panel bodyClass="tablePanel">
+				<f:facet name="header">
+					<h:panelGrid columns="9" style="height:10px">
+						<h:commandButton value="#{msgReports.exportPDF}"
+							image="/images/icons/silk/16x16/page_pdf.gif"
+							styleClass="toolButton" action="#{xBean.exportPdf}">
+							<rich:toolTip>
+								<span style="white-space: nowrap; color: black;">#{msgReports.exportPDF}
+								</span>
+							</rich:toolTip>
+						</h:commandButton>
+						<rich:spacer width="5" />
+						<a4j:commandButton value="#{msgReports.btnPrnMatrix}"
+							image="/images/icons/silk/16x16/printer_empty.gif"
+							styleClass="toolButton" action="#{xBean.printDotMatrix}"
+							rendered="#{xBean.visit.curUser.defaultPrinter != null and xBean.visit.curUser.matrixPrinter}">
+							<rich:toolTip>
+								<span style="white-space: nowrap; color: black;">#{msgReports.btnPrnMatrix}
+								</span>
+							</rich:toolTip>
+						</a4j:commandButton>
+						<rich:spacer width="5" />
+						<a4j:commandButton value="#{msgReports.btnPrnLaser}"
+							image="/images/icons/silk/16x16/printer.gif"
+							styleClass="toolButton" action="#{xBean.printLaser}"
+							rendered="#{xBean.visit.curUser.defaultPrinter != null and not xBean.visit.curUser.matrixPrinter}">
+							<rich:toolTip>
+								<span style="white-space: nowrap; color: black;">#{msgReports.btnPrnLaser}
+								</span>
+							</rich:toolTip>
+						</a4j:commandButton>
+						<rich:spacer width="300" />
+						<h:outputText value="#{xBean.title}" style="font-weight:bold" />
+						<rich:spacer width="320" />
+						<a4j:commandButton image="/images/icons/silk/16x16/cross.gif"
+							styleClass="toolButton" style="float:right"
+							onclick="javascript:Richfaces.hideModalPanel('printModalPanel');"
+							reRender="mainForm" action="#{xBean.modalClose}">
+							<rich:toolTip>
+								<span style="white-space: nowrap; color: black;">#{msgPaymaster.close}
+								</span>
+							</rich:toolTip>
+						</a4j:commandButton>
+					</h:panelGrid>
+
+				</f:facet>
+				<div
+					style="width: 800px; height: 600px; overflow: auto; background-color: white; font-size: 9">
+					<center>
+						<pre>#{xBean.printableContent}</pre>
+					</center>
+				</div>
+			</rich:panel>
+		</h:form>
+	</rich:modalPanel>
+</ui:composition>

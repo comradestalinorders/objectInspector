@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+
+        <rich:spacer height="50px;"></rich:spacer>
+ 		<rich:separator lineType="beveled" rendered="true" height="1px"></rich:separator>
+ 		
+ 		<center>
+	     	<h:panelGrid columns="4">
+	 					<a4j:commandButton styleClass="button"  
+	 								 id="#{xBean.btnOk.buttonId}" 
+	 								 value="#{xBean.btnOk.text}"
+	 								 rendered="#{xBean.btnOk.rendered}"
+	 								 actionListener="#{xBean.btnActionListener}"  
+	 								 action="#{xBean.btnPressed}" 
+	 								 reRender="msgModal#{xBean.index}, msgContentDlg#{xBean.index}"
+	 								 oncomplete="javascript:showModal('msgModal#{xBean.index}', #{xBean.errMsg});"/>
+	 								 
+	 					 <a4j:commandButton styleClass="button"  
+	 								 id="#{xBean.btnRestore.buttonId}" 
+	 								 value="#{xBean.btnRestore.text}"
+	 								 rendered="#{xBean.btnRestore.rendered}"
+	 								 actionListener="#{xBean.btnActionListener}"  
+	 								 action="#{xBean.btnPressed}" 
+	 								 reRender="msgModal#{xBean.index}, msgContentDlg#{xBean.index}"
+	 								 immediate="true"
+	 								 oncomplete="javascript:showModal('msgModal#{xBean.index}', #{xBean.errMsg});"/>
+	 								 
+	 					 <a4j:commandButton styleClass="button"  
+	 								 id="#{xBean.btnCancel.buttonId}" 
+	 								 value="#{xBean.btnCancel.text}"
+	 								 rendered="#{xBean.btnCancel.rendered}"
+	 								 actionListener="#{xBean.btnActionListener}"  
+	 								 action="#{xBean.btnPressed}" 
+	 								 reRender="msgContentDlg#{xBean.index}"
+	 								 oncomplete="javascript:showModal('msgModalDlg#{xBean.index}', false);" />
+	      	</h:panelGrid>
+		</center>
+	
+</ui:composition>
